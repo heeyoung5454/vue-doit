@@ -1,21 +1,18 @@
 <template>
-  <div>
-    <router-view />
-  </div>
+  <v-app>
+    <v-main>
+      <router-view/>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
-import "@/assets/scss/common.scss";
 
 export default {
-  name: "App",
-  components: {},
-};
-</script>
+  name: 'App',
 
-<style>
-#app {
-  width: 80%;
-  margin: 10px auto;
+  data: () => ({
+    //
+  }),
 }
-</style>
+</script>
