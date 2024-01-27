@@ -41,6 +41,8 @@
 </template>
 
 <script>
+import { noTokenHttp } from "@/util/http";
+
 export default {
   name: "LoginIndex",
   data: () => ({
@@ -56,7 +58,23 @@ export default {
 
       this.loading = true;
 
-      setTimeout(() => (this.loading = false), 2000);
+      let loginParams = {
+        nickname: this.id,
+        password: this.password,
+      };
+
+      noTokenHttp
+        .post("/login", loginParams)
+        .then((res) => {
+          if (res.data.result === "suc") {
+            this.$router.push({ name: "main" });
+          } else {
+            alert("로그인실패");
+          }
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
     required(v) {
       return !!v || "값을 입력해주세요";
