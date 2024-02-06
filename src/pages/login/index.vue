@@ -67,6 +67,9 @@ export default {
         .post("/login", loginParams)
         .then((res) => {
           if (res.data.result === "suc") {
+            // 로컬스토리지에 저장
+            localStorage.setItem("accessToken", res.data.data.accessToken);
+
             this.$router.push({ name: "main" });
           } else {
             alert("로그인실패");
