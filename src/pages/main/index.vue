@@ -30,6 +30,7 @@
       </div>
     </div>
   </div>
+  <div @click="goPage('friend')">친구 페이지</div>
 </template>
 
 <script>
@@ -96,6 +97,11 @@ export default {
         this.selectedDate = day.date;
         console.log(`Clicked on day ${day.date}`);
       }
+    },
+
+    // 라우터 이동
+    goPage(page) {
+      this.$router.push({ name: page });
     },
   },
   directives: {
