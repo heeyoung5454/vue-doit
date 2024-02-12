@@ -25,11 +25,7 @@
                   :key="index"
                 >
                   <span :class="getState(item.state)">{{ item.nickname }}</span>
-                  <v-btn
-                    color="info"
-                    @click="goMemberHome(memberId)"
-                    class="go"
-                  >
+                  <v-btn color="info" @click="goMemberHome(item)" class="go">
                     바로가기
                   </v-btn>
                 </div>
@@ -116,9 +112,13 @@ export default {
     /**
      * 친구 페이지 바로 가기
      */
-    goMemberHome() {
+    goMemberHome(item) {
       this.$router.push({
         name: "friendPage",
+        params: {
+          id: item.memberId,
+          state: item.state,
+        },
       });
     },
   },

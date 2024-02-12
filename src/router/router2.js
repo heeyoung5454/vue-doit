@@ -5,13 +5,14 @@ export default [
     component: () => import("@/pages/main/index"),
   },
   {
-    path: "/friend",
+    path: "/friend/main",
     name: "friend",
     component: () => import("@/pages/friend/index"),
   },
   {
-    path: "/friend/main",
+    path: "/friend/:id?/:state?",
     name: "friendPage",
+    props: true,
     component: () => import("@/pages/friend/friendPage"),
   },
 ];
