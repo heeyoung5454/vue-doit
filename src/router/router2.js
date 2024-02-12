@@ -9,4 +9,9 @@ export default [
     name: "friend",
     component: () => import("@/pages/friend/index"),
   },
+  {
+    path: "/friend/main",
+    name: "friendPage",
+    component: () => import("@/pages/friend/friendPage"),
+  },
 ];
