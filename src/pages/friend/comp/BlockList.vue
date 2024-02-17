@@ -4,7 +4,9 @@
       <!-- 차단 목록 -->
       <v-dialog transition="dialog-top-transition" min-width="400">
         <template v-slot:activator="{ props }">
-          <v-btn color="red" v-bind="props">차단목록</v-btn>
+          <v-btn color="red" v-bind="props"
+            >차단 <v-icon end icon="mdi-cancel"></v-icon>
+          </v-btn>
         </template>
         <template v-slot:default="{ isActive }">
           <v-card>
