@@ -1,5 +1,5 @@
 <template>
-  <v-sheet class="bg-deep-purple pa-12 home-page">
+  <div class="login-page">
     <h2>환영합니다</h2>
 
     <v-card class="mx-auto px-6 py-8" max-width="344">
@@ -36,8 +36,20 @@
           로그인
         </v-btn>
       </v-form>
+
+      <v-btn
+        class="join"
+        block
+        color="secondary"
+        size="large"
+        type="submit"
+        variant="tonal"
+        @click="$router.push('/join')"
+      >
+        회원가입
+      </v-btn>
     </v-card>
-  </v-sheet>
+  </div>
 </template>
 
 <script>
@@ -70,7 +82,8 @@ export default {
             // 로컬스토리지에 저장
             localStorage.setItem("accessToken", res.data.data.accessToken);
 
-            this.$router.push({ name: "main" });
+            window.location.replace("/main");
+            //this.$router.push({ name: "main" });
           } else {
             alert("로그인실패");
           }
@@ -86,12 +99,15 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-.home-page {
-  min-height: 100vh;
+<style lang="scss" scoped>
+.login-page {
   h2 {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
+  }
+
+  .join {
+    margin-top: 20px;
   }
 }
 </style>

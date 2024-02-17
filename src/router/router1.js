@@ -1,7 +1,20 @@
 export default [
   {
     path: "/",
-    name: "login",
-    component: () => import("@/pages/login/index"),
+    name: "EnterLayout",
+    redirect: "/main",
+    component: () => import("@/layout/EnterLayout"),
+    children: [
+      {
+        path: "",
+        name: "login",
+        component: () => import("@/pages/enter/login"),
+      },
+      {
+        path: "join",
+        name: "join",
+        component: () => import("@/pages/enter/join"),
+      },
+    ],
   },
 ];
