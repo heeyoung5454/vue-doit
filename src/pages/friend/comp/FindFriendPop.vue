@@ -152,7 +152,7 @@ export default {
         width: 10px;
         height: 10px;
         border-radius: 5px;
-        background-color: red;
+        background-color: #1867c0;
       }
     }
 
