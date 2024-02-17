@@ -1,6 +1,9 @@
 <template>
   <div class="friend-page">
-    <h2>친구 페이지</h2>
+    <div class="friend-title">
+      <h2>친구 관리</h2>
+      <RequestList />
+    </div>
 
     <BlockList />
     <div class="friend-wrapper">
@@ -53,13 +56,13 @@
 
 <script>
 import { http } from "@/util/http";
+import RequestList from "./comp/RequestList";
 import BlockList from "./comp/BlockList";
-
 import FindFriendPop from "./comp/FindFriendPop";
 
 export default {
   name: "FriendIndex",
-  components: { BlockList, FindFriendPop },
+  components: { RequestList, BlockList, FindFriendPop },
   data: () => ({
     followBackList: [],
     followingList: [],
@@ -72,19 +75,14 @@ export default {
      ** 친구 목록 불러오기
      */
     getFriend() {
-      http
-        .get("/friends")
-        .then((res) => {
-          if (res.data.result === "suc") {
-            this.followBackList = res.data.data.followBackList;
-            this.followingList = res.data.data.followingList;
-          } else {
-            alert("실패");
-          }
-        })
-        .finally(() => {
-          this.loading = false;
-        });
+      http.get("/friends").then((res) => {
+        if (res.data.result === "suc") {
+          this.followBackList = res.data.data.followBackList;
+          this.followingList = res.data.data.followingList;
+        } else {
+          alert("실패");
+        }
+      });
     },
 
     /**
@@ -126,6 +124,12 @@ export default {
 <style scoped lang="scss">
 .friend-page {
   padding: 10px;
+
+  .friend-title {
+    display: flex;
+    align-items: center;
+  }
+
   .friend-wrapper {
     padding: 20px 0;
     display: flex;
