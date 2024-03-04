@@ -1,5 +1,5 @@
 <template>
-  <div
+  <!-- <div
     class="calendar-container"
     ref="calendarContainer"
     v-scroll="handleScroll"
@@ -29,15 +29,19 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
+  <calendar />
+
   <div @click="goPage('friend')">친구 페이지</div>
 </template>
 
 <script>
 import moment from "moment";
+import calendar from "./calendar.vue";
 
 export default {
   name: "mainIndex",
+  components: { calendar },
   data() {
     return {
       daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
