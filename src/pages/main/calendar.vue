@@ -50,6 +50,11 @@ export default {
       ],
       daysOfWeek: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
       calendarDays: [],
+
+      // 드래그 관련 변수
+      selectionStartIndex: null,
+      selectionEndIndex: null,
+      selectDateList: [],
     };
   },
   computed: {
@@ -109,19 +114,52 @@ export default {
       }
       this.initCalendarDays();
     },
+    /**
+     * 마우스 클릭 시작
+     */
     handleMouseDown(index) {
-      console.log("donw", this.currentMonth, this.currentYear, index);
-      // Handle mouse down event
+      this.selectDateList = [];
+      this.selectionStartIndex = index; // 드래그 시작 인덱스 저장
     },
-    handleMouseUp(index) {
-      console.log("up", this.currentMonth, this.currentYear, index);
 
-      // Handle mouse up event
-    },
+    /**
+     * 드래그 중...
+     */
     handleMouseMove(index) {
-      console.log("move", this.currentMonth, this.currentYear, index);
+      if (this.selectionStartIndex !== null) {
+        this.selectionEndIndex = index; // 드래그 끝 인덱스 업데이트
+      }
+    },
 
-      // Handle mouse move event
+    /**
+     * 마우스 클릭 끝
+     */
+
+    handleMouseUp(index) {
+      this.selectionEndIndex = index;
+
+      // end가 더 작으면 switch
+      if (this.selectionEndIndex < this.selectionStartIndex) {
+        let temp = this.selectionStartIndex;
+        this.selectionStartIndex = this.selectionEndIndex;
+        this.selectionEndIndex = temp;
+      }
+
+      for (let i = this.selectionStartIndex; i <= this.selectionEndIndex; i++) {
+        let day = i;
+        if (i < 10) {
+          day = "0" + i;
+        }
+
+        this.selectDateList.push(
+          this.currentYear + "-" + this.currentMonth + "-" + day
+        );
+      }
+      console.log(this.selectDateList);
+
+      // 드래그 관련 변수 초기화
+      this.selectionStartIndex = null;
+      this.selectionEndIndex = null;
     },
   },
   mounted() {
