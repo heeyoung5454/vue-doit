@@ -16,27 +16,41 @@
       <div
         v-for="(day, index) in calendarDays"
         :key="index"
-        class="calendar-content"
+        class="calendar-day"
+        @mousedown="handleMouseDown(day)"
+        @mouseup="handleMouseUp(day)"
+        @mousemove="handleMouseMove(day)"
       >
+        {{ day }}
+
         <div
-          class="calendar-day"
-          @mousedown="handleMouseDown(day)"
-          @mouseup="handleMouseUp(day)"
-          @mousemove="handleMouseMove(day)"
+          :class="getSchedule(day, 'class')"
+          class="sch-title"
+          @click.stop="updateSchedule(day)"
         >
-          {{ day }}
-        </div>
-        <div :class="getSchedule(day, 'class')" class="sch-title">
           {{ getSchedule(day, "title") }}
         </div>
-
-        <DayUpdateModal
-          v-if="handleDayModal(day)"
-          :dayList="selectDateList"
-          @clickBtn="handleSchedule"
-        />
       </div>
     </div>
+
+    <v-dialog v-model="dialog" width="auto">
+      <v-card>
+        <v-card-title class="d-flex justify-space-between align-center">
+          <div class="text-h5 text-medium-emphasis ps-2"></div>
+          <v-btn
+            icon="mdi-close"
+            variant="text"
+            @click="this.dialog = false"
+          ></v-btn>
+        </v-card-title>
+
+        <DayUpdateModal
+          :dayList="selectDateList"
+          @clickBtn="handleSchedule"
+          :updateData="updateData"
+        />
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -49,6 +63,15 @@ export default {
   components: { DayUpdateModal },
   data() {
     return {
+      dialog: false,
+      // 스케줄 수정시 필요한 정보
+      updateData: {
+        id: null,
+        title: null,
+        startDate: null,
+        endDate: null,
+      },
+
       currentMonthIndex: 0,
       currentYear: new Date().getFullYear(), // 현재 년도 추가
 
@@ -134,7 +157,9 @@ export default {
         }
 
         if (day == startDay) {
-          if (type === "title") return this.mainScheduleList[i].title;
+          if (type) {
+            return this.mainScheduleList[i][type];
+          }
         }
       }
 
@@ -222,6 +247,8 @@ export default {
           this.currentYear + "-" + this.currentMonth + "-" + day
         );
       }
+
+      this.dialog = true;
     },
 
     /**
@@ -243,12 +270,13 @@ export default {
      * 스케줄 등록/수정
      */
     handleSchedule(emitParam) {
+      console.log(emitParam);
       // 등록 API 호출
       if (emitParam.type === "insert") {
         let insertParams = {
           title: emitParam.title,
-          startDate: emitParam.dayList[0],
-          endDate: emitParam.dayList[emitParam.dayList.length - 1],
+          startDate: emitParam.startDate,
+          endDate: emitParam.endDate,
         };
 
         http
@@ -265,7 +293,47 @@ export default {
             }
           })
           .catch((err) => alert("catch" + JSON.stringify(err)));
+
+        return;
       }
+
+      // 제목 수정 API 호출
+      if (emitParam.type === "update") {
+        http
+          .patch(`/main-schedule/${emitParam.mainId}?title=` + emitParam.title)
+          .then((res) => {
+            if (res.data.result === "suc") {
+              alert("제목 수정 성공");
+
+              // 페이지 새로고침
+              window.location.reload();
+            } else if (res.data.result === "err") {
+              alert("제목 수정 실패.");
+              return;
+            }
+          })
+          .catch((err) => alert("catch" + JSON.stringify(err)));
+
+        return;
+      }
+    },
+
+    /**
+     * 스케줄 수정
+     */
+    updateSchedule(day) {
+      for (let i = 0; i < this.mainScheduleList.length; i++) {
+        let startDay = this.mainScheduleList[i].startDate.slice(-2);
+        let endDay = this.mainScheduleList[i].endDate.slice(-2);
+
+        if (day >= startDay && day <= endDay) {
+          this.updateData.mainId = this.mainScheduleList[i].mainScheduleId;
+          this.updateData.title = this.mainScheduleList[i].title;
+          this.updateData.startDate = this.mainScheduleList[i].startDate;
+          this.updateData.endDate = this.mainScheduleList[i].endDate;
+        }
+      }
+      // this.dialog = false;
     },
   },
 };
@@ -297,22 +365,20 @@ export default {
   background-color: rgb(205, 229, 255);
 }
 
-.calendar-content {
+.calendar-day {
   position: relative;
   height: 100px;
   border: 1px solid #ccc;
   cursor: pointer;
-  .calendar-day {
-  }
-  .chk {
-    width: 100%;
-    height: 17px;
-    background-color: red;
+}
+.chk {
+  width: 100%;
+  height: 17px;
+  background-color: red;
 
-    &.sch-title {
-      color: #fff;
-      font-size: 13px;
-    }
+  &.sch-title {
+    color: #fff;
+    font-size: 13px;
   }
 }
 </style>

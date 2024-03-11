@@ -4,12 +4,15 @@
       <div class="title">
         <input type="text" v-model="title" />
       </div>
+      .>> {{ updateData }}
       <div class="date">
-        {{ dayList[0] }}
-        ~ {{ dayList[dayList.length - 1] }}
+        {{ startDate }}
+        ~ {{ endDate }}
       </div>
 
-      <v-btn color="primary" @click="handleBtn()" class="insert"> 등록 </v-btn>
+      <v-btn color="primary" @click="handleBtn()" class="insert">
+        {{ this.updateData.id ? "수정" : "등록" }}
+      </v-btn>
     </div>
   </div>
 </template>
@@ -21,12 +24,35 @@ export default {
     dayList: {
       type: Array,
     },
+    //이미 등록된 스케줄 정보
+    updateData: {
+      type: Object,
+    },
   },
   emits: ["clickBtn"],
   data() {
     return {
       title: "새로운 이벤트",
+      startDate: null,
+      endDate: null,
     };
+  },
+  watch: {
+    updateData() {
+      this.title = this.updateData.title;
+      this.startDate = this.updateData.startDate;
+      this.endDate = this.updateData.endDate;
+    },
+  },
+  mounted() {
+    this.startDate = this.dayList[0];
+    this.endDate = this.dayList[this.dayList.length - 1];
+
+    if (this.mainId) {
+      this.title = this.updateData.title;
+      this.startDate = this.updateData.startDate;
+      this.endDate = this.updateData.endDate;
+    }
   },
   methods: {
     /**
@@ -34,10 +60,16 @@ export default {
      */
     handleBtn() {
       let emitParam = {
-        dayList: this.dayList,
+        startDate: this.startDate,
+        endDate: this.endDate,
         title: this.title,
         type: "insert",
       };
+
+      if (this.updateData.id) {
+        emitParam.type = "update";
+        emitParam.mainId = this.updateData.id;
+      }
       this.$emit("clickBtn", emitParam);
     },
   },
@@ -46,23 +78,12 @@ export default {
 
 <style scoped lang="scss">
 .day-update-modal-comp {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-
   .content {
-    position: absolute;
-    z-index: 99;
-    top: 10px;
-    left: 20px;
     min-width: 300px;
     min-height: 200px;
-    padding: 20px;
-    background-color: rgb(205, 229, 255);
+    padding: 0 20px 20px;
+    background-color: #ffffff;
     animation: modal-bg-show 0.3s;
-    border-radius: 12px;
 
     .insert {
       position: absolute;
